@@ -81,7 +81,10 @@ const ModalForm = ({ open, handleClose }) => {
 
 
                     <IconButton onClick={handleEmojiOpen} size="large" >
-                        {selectedEmoji}
+                        <Box>
+                            {selectedEmoji}
+                            <Typography fontSize={"9px"} fontWeight={"bold"} color={"gray"} letterSpacing={".8px"} >change emoji</Typography>
+                        </Box>
                     </IconButton>
                     <TextField
                         size='normal'
@@ -102,6 +105,7 @@ const ModalForm = ({ open, handleClose }) => {
                                     borderColor: '#FF725E',
                                 },
                             },
+
                         }}
 
                     />
@@ -127,6 +131,7 @@ const ModalForm = ({ open, handleClose }) => {
                             },
                         }}
                     />
+                    <Typography fontSize={"10px"} fontWeight={500} color={"gray"} letterSpacing={".8px"} >Add quantity units eg.7pcs,1dozen</Typography>
 
                     <Button variant="contained" color="primary" onClick={handleSubmit} sx={{
                         mt: 1,

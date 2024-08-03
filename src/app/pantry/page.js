@@ -10,6 +10,7 @@ import { onAuthStateChanged, auth } from '../../services/firebase';
 import Loader from '../components/loader';
 import ModalForm from '../components/AddManuallyModal';
 import { db, collection, onSnapshot, doc, deleteDoc } from '../../services/firebase';
+import CameraModal from '../components/CameraModal';
 
 function Page() {
     const router = useRouter();
@@ -18,6 +19,7 @@ function Page() {
     const [activeButton, setActiveButton] = useState(0);
     const [modalOpen, setModalOpen] = useState(false);
     const [pantry, setPantry] = useState([]);
+    const [cameraModalOpen, setCameraModalOpen] = useState(false);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -48,12 +50,23 @@ function Page() {
     };
 
     const handleIconClick = (type) => {
-        type === 'add' ? setModalOpen(true) : console.log('camera');
+        type === 'add' ? setModalOpen(true) : setCameraModalOpen(true);
     };
 
     const handleModalClose = () => {
         setModalOpen(false);
     };
+
+    const handleCameraModalClose = () => {
+        setCameraModalOpen(false);
+    };
+
+    const handlePhotoCapture = (photo) => {
+        // Handle the captured photo here, e.g., send it to an API for classification
+        console.log('Captured Photo:', photo);
+        handleCameraModalClose();
+    };
+
 
     const handleDelete = async (id) => {
         try {
@@ -93,7 +106,7 @@ function Page() {
                                     '&:hover': {
                                         color: '#FF5733',
                                     },
-                                    fontSize: { xs: 40, sm: 50, md: 60 } // Responsive fontSize
+                                    fontSize: { xs: 40, sm: 50, md: 60 }
                                 }}
                             >
                                 <CameraAltIcon fontSize='large' />
@@ -101,6 +114,8 @@ function Page() {
                         </Box>
 
                         <ModalForm open={modalOpen} handleClose={handleModalClose} />
+                        <CameraModal open={cameraModalOpen} onClose={handleCameraModalClose} onPhotoCapture={handlePhotoCapture} />
+
 
                         <TextField
                             id="search-bar"
@@ -125,7 +140,7 @@ function Page() {
                                 },
                                 width: '100%',
                                 mb: 2,
-                              
+
                             }}
                         />
 
@@ -171,7 +186,7 @@ function Page() {
                                     <Paper
                                         key={item.id}
                                         elevation={0}
-                                        
+
                                         sx={{
                                             p: 1.3,
                                             mt: 1.5,
