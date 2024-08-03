@@ -4,12 +4,12 @@ import { getFirestore, collection, setDoc, doc, deleteDoc, onSnapshot } from 'fi
 
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCatH-G_1hvZvuKz3oHr-U38aLcdwxlOL8",
-    authDomain: "pantry-89653.firebaseapp.com",
-    projectId: "pantry-89653",
-    storageBucket: "pantry-89653.appspot.com",
-    messagingSenderId: "631520277933",
-    appId: "1:631520277933:web:9015f1f20cc7a9a2745d24"
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 
