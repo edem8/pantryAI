@@ -1,6 +1,25 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, setPersistence, browserSessionPersistence, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, collection, setDoc, doc, deleteDoc, onSnapshot } from 'firebase/firestore';
+import 
+{
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    setPersistence,
+    browserSessionPersistence,
+    onAuthStateChanged
+} from "firebase/auth";
+import 
+{ 
+    getFirestore, 
+    collection, 
+    setDoc, 
+    doc, 
+    deleteDoc, 
+    onSnapshot 
+} from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
+
 
 
 const firebaseConfig = {
@@ -19,4 +38,21 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
-export { db, collection, doc, setDoc, auth, deleteDoc, onSnapshot, googleProvider, signInWithPopup, setPersistence, browserSessionPersistence, onAuthStateChanged };
+export {
+    getStorage,
+    ref,
+    uploadBytes,
+    getDownloadURL,
+    db,
+    collection,
+    doc,
+    setDoc,
+    auth,
+    deleteDoc,
+    onSnapshot,
+    googleProvider,
+    signInWithPopup,
+    setPersistence,
+    browserSessionPersistence,
+    onAuthStateChanged
+};

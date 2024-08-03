@@ -25,8 +25,8 @@ const ModalForm = ({ open, handleClose }) => {
         }
 
         try {
-            handleClose()
-            toast.success("Item added to pantry")
+            handleClose();
+            toast.success("Item added to pantry");
             const user = auth.currentUser;
 
             const userId = user.uid;
@@ -38,8 +38,6 @@ const ModalForm = ({ open, handleClose }) => {
                 quantity,
                 emoji: selectedEmoji
             });
-
-
 
             setName('');
             setQuantity('');
@@ -65,7 +63,7 @@ const ModalForm = ({ open, handleClose }) => {
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
-                        width: 300,
+                        width: 305,
                         maxHeight: '80vh',
                         bgcolor: 'background.paper',
                         border: '2px solid #FF725E',
@@ -73,19 +71,31 @@ const ModalForm = ({ open, handleClose }) => {
                         boxShadow: 24,
                         p: 2,
                         overflowY: 'auto',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
                     }}
                 >
-                    <Typography id="modal-title" fontWeight={"600"} color="#000">
+                    <Typography id="modal-title" fontWeight={"600"} color="#000" mb={1}>
                         Add Item
                     </Typography>
 
-
-                    <IconButton onClick={handleEmojiOpen} size="large" >
-                        <Box>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            mb: 1,
+                        }}
+                    >
+                        <IconButton onClick={handleEmojiOpen} size="large">
                             {selectedEmoji}
-                            <Typography fontSize={"9px"} fontWeight={"bold"} color={"gray"} letterSpacing={".8px"} >change emoji</Typography>
-                        </Box>
-                    </IconButton>
+                        </IconButton>
+                        <Typography fontSize={"9px"} fontWeight={"bold"} color={"gray"} letterSpacing={".8px"} >
+                            Change emoji
+                        </Typography>
+                    </Box>
+
                     <TextField
                         size='normal'
                         margin="none"
@@ -94,6 +104,7 @@ const ModalForm = ({ open, handleClose }) => {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         sx={{
+                           
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
                                     borderColor: '#FF725E',
@@ -105,9 +116,7 @@ const ModalForm = ({ open, handleClose }) => {
                                     borderColor: '#FF725E',
                                 },
                             },
-
                         }}
-
                     />
 
                     <TextField
@@ -118,6 +127,7 @@ const ModalForm = ({ open, handleClose }) => {
                         value={quantity}
                         onChange={(e) => setQuantity(e.target.value)}
                         sx={{
+                          
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
                                     borderColor: '#FF725E',
@@ -131,15 +141,21 @@ const ModalForm = ({ open, handleClose }) => {
                             },
                         }}
                     />
-                    <Typography fontSize={"10px"} fontWeight={500} color={"gray"} letterSpacing={".8px"} >Add quantity units eg.7pcs,1dozen</Typography>
+                    <Typography fontSize={"10px"} fontWeight={500} color={"gray"} letterSpacing={".8px"} mb={1}>
+                        Add quantity units e.g. 7pcs, 1 dozen
+                    </Typography>
 
-                    <Button variant="contained" color="primary" onClick={handleSubmit} sx={{
-                        mt: 1,
-                        backgroundColor: '#FF725E',
-                        '&:hover': {
-                            backgroundColor: '#FF5C4A',
-                        },
-                    }} >
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSubmit}
+                        sx={{
+                            backgroundColor: '#FF725E',
+                            '&:hover': {
+                                backgroundColor: '#FF5C4A',
+                            },
+                        }}
+                    >
                         Submit
                     </Button>
                 </Box>

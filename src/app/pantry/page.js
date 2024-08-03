@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, InputAdornment, Button, Paper, IconButton, Typography } from '@mui/material';
+import { getStorage, ref, uploadBytes, getDownloadURL } from '../../services/firebase';
 import SearchIcon from '@mui/icons-material/Search';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
@@ -45,6 +46,7 @@ function Page() {
         };
     }, [router]);
 
+
     const handleButtonClick = (button) => {
         setActiveButton(button);
     };
@@ -61,8 +63,16 @@ function Page() {
         setCameraModalOpen(false);
     };
 
+    const uploadImage = async (blob) => {
+        const storage = getStorage();
+        const storageRef = ref(storage, `images/${Date.now()}.jpg`);
+        await uploadBytes(storageRef, blob);
+        const downloadURL = await getDownloadURL(storageRef);
+        return downloadURL;
+    };
+
     const handlePhotoCapture = (photo) => {
-        // Handle the captured photo here, e.g., send it to an API for classification
+
         console.log('Captured Photo:', photo);
         handleCameraModalClose();
     };
