@@ -42,6 +42,7 @@ const EmojiPickerModal = ({ open, handleClose, onEmojiSelect }) => {
                         data={data}
                         categories={['foods']}
                         navPosition="none"
+                        emojiSize="27"
                         theme="light"
                         previewPosition="none"
                         onEmojiSelect={handleEmojiSelect}

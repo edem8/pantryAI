@@ -88,7 +88,7 @@ const ModalForm = ({ open, handleClose }) => {
                             mb: 1,
                         }}
                     >
-                        <IconButton onClick={handleEmojiOpen} size="large">
+                        <IconButton onClick={handleEmojiOpen} size="medium">
                             {selectedEmoji}
                         </IconButton>
                         <Typography fontSize={"9px"} fontWeight={"bold"} color={"gray"} letterSpacing={".8px"} >

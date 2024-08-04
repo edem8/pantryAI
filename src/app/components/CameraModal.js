@@ -6,7 +6,9 @@ import { Camera } from 'react-camera-pro';
 
 const CameraModal = ({ open, onClose, onPhotoCapture }) => {
     const camera = useRef(null);
-    const [facingMode, setFacingMode] = useState('user');
+    const [numberOfCameras, setNumberOfCameras] = useState(0);
+
+    const isSwitchCameraEnabled = numberOfCameras <= 1
 
     const handleCapture = () => {
         if (camera.current) {
@@ -16,7 +18,7 @@ const CameraModal = ({ open, onClose, onPhotoCapture }) => {
     };
 
     const handleSwitchCamera = () => {
-        setFacingMode(prevMode => (prevMode === 'user' ? 'environment' : 'user'));
+        camera.current.switchCamera()
     };
 
     return (
@@ -40,30 +42,32 @@ const CameraModal = ({ open, onClose, onPhotoCapture }) => {
                     justifyContent: 'center',
                 }}
             >
-                <Camera ref={camera} aspectRatio={4 / 3} facingMode={facingMode} />
+                <Camera ref={camera} aspectRatio={4 / 3} numberOfCamerasCallback={setNumberOfCameras} />
 
                 <Box
                     sx={{
                         display: 'flex',
                         flexDirection: 'row',
                         alignItems: 'center',
-                        justifyContent: 'center',
+                        justifyContent: isSwitchCameraEnabled ? 'center' : 'center',
                         mt: 2,
                         gap: 2,
                     }}
                 >
-                    <IconButton
-                        onClick={handleSwitchCamera}
-                        sx={{
-                            backgroundColor: '#FF725E',
-                            '&:hover': {
-                                backgroundColor: '#FF5C4A',
-                            },
-                            p: 1.5,
-                        }}
-                    >
-                        <FlipCameraIosIcon sx={{ color: 'white' }} />
-                    </IconButton>
+                    {!isSwitchCameraEnabled && (
+                        <IconButton
+                            onClick={handleSwitchCamera}
+                            sx={{
+                                backgroundColor: '#FF725E',
+                                '&:hover': {
+                                    backgroundColor: '#FF5C4A',
+                                },
+                                p: 1.5,
+                            }}
+                        >
+                            <FlipCameraIosIcon sx={{ color: 'white' }} />
+                        </IconButton>
+                    )}
                     <IconButton
                         onClick={handleCapture}
                         sx={{
