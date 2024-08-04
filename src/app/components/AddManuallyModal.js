@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, TextField, Modal, Typography, Button, IconButton } from '@mui/material';
 import EmojiPickerModal from './EmojiPickerModal';
-import { auth, db, setDoc, collection, doc } from '../../services/firebase';
+import { auth, db, setDoc, collection, doc, query, where, getDocs, updateDoc } from '../../services/firebase';
 import { toast } from 'sonner';
 
-const ModalForm = ({ open, handleClose }) => {
+const ModalForm = ({ open, handleClose, initialName, setInitialName }) => {
     const [name, setName] = useState('');
     const [quantity, setQuantity] = useState('');
     const [selectedEmoji, setSelectedEmoji] = useState('🍅');
     const [emojiModalOpen, setEmojiModalOpen] = useState(false);
+
+    useEffect(() => {
+        if (open) {
+            setName(initialName || '');
+        }
+    }, [open, initialName]);
 
     const handleEmojiOpen = () => setEmojiModalOpen(true);
     const handleEmojiClose = () => setEmojiModalOpen(false);
@@ -18,30 +24,51 @@ const ModalForm = ({ open, handleClose }) => {
         handleEmojiClose();
     };
 
+    const capitalizeName = (name) => {
+        return name
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+    };
+
     const handleSubmit = async () => {
         if (!name || !quantity) {
             console.log("Name and Quantity are required");
             return;
         }
 
+        const capitalizedName = capitalizeName(name.trim());
+
         try {
             handleClose();
             toast.success("Item added to pantry");
-            const user = auth.currentUser;
 
+            const user = auth.currentUser;
             const userId = user.uid;
             const userCollectionRef = collection(db, "users", userId, "items");
-            const newItemRef = doc(userCollectionRef);
 
-            await setDoc(newItemRef, {
-                name,
-                quantity,
-                emoji: selectedEmoji
-            });
+            const itemQuery = query(userCollectionRef, where("name", "==", capitalizedName));
+            const querySnapshot = await getDocs(itemQuery);
+
+            if (!querySnapshot.empty) {
+                const existingItemRef = querySnapshot.docs[0].ref;
+                await updateDoc(existingItemRef, {
+                    quantity: quantity,
+                    emoji: selectedEmoji
+                });
+            } else {
+                const newItemRef = doc(userCollectionRef);
+                await setDoc(newItemRef, {
+                    name: capitalizedName,
+                    quantity,
+                    emoji: selectedEmoji
+                });
+            }
 
             setName('');
             setQuantity('');
             setSelectedEmoji('🍅');
+            setInitialName('')
 
         } catch (error) {
             console.error("Error adding item: ", error);
@@ -53,7 +80,7 @@ const ModalForm = ({ open, handleClose }) => {
             <Modal
                 disablePortal
                 open={open}
-                onClose={handleClose}
+                onClose={() => { handleClose(); setName(''); }}
                 aria-labelledby="modal-title"
                 aria-describedby="modal-description"
             >
@@ -104,7 +131,6 @@ const ModalForm = ({ open, handleClose }) => {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         sx={{
-                           
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
                                     borderColor: '#FF725E',
@@ -127,7 +153,6 @@ const ModalForm = ({ open, handleClose }) => {
                         value={quantity}
                         onChange={(e) => setQuantity(e.target.value)}
                         sx={{
-                          
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
                                     borderColor: '#FF725E',
@@ -159,7 +184,7 @@ const ModalForm = ({ open, handleClose }) => {
                         Submit
                     </Button>
                 </Box>
-            </Modal>
+            </Modal >
             <EmojiPickerModal open={emojiModalOpen} handleClose={handleEmojiClose} onEmojiSelect={handleEmojiSelect} />
         </>
     );

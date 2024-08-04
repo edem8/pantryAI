@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Modal, Box, IconButton, Typography } from '@mui/material';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import FlipCameraIosIcon from '@mui/icons-material/FlipCameraIos';
@@ -9,6 +9,7 @@ const CameraModal = ({ open, onClose, onPhotoCapture }) => {
     const [numberOfCameras, setNumberOfCameras] = useState(0);
 
     const isSwitchCameraEnabled = numberOfCameras <= 1
+
 
     const handleCapture = () => {
         if (camera.current) {
@@ -22,7 +23,9 @@ const CameraModal = ({ open, onClose, onPhotoCapture }) => {
     };
 
     return (
-        <Modal open={open} onClose={onClose}>
+        <Modal open={open} onClose={() => {
+            onClose();
+        }}>
             <Box
                 sx={{
                     position: 'absolute',

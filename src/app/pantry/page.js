@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, InputAdornment, Button, Paper, IconButton, Typography } from '@mui/material';
-import { getStorage, ref, uploadBytes, getDownloadURL } from '../../services/firebase';
 import SearchIcon from '@mui/icons-material/Search';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
@@ -12,6 +11,10 @@ import Loader from '../components/loader';
 import ModalForm from '../components/AddManuallyModal';
 import { db, collection, onSnapshot, doc, deleteDoc } from '../../services/firebase';
 import CameraModal from '../components/CameraModal';
+import { toast } from 'sonner';
+
+
+
 
 function Page() {
     const router = useRouter();
@@ -21,6 +24,7 @@ function Page() {
     const [modalOpen, setModalOpen] = useState(false);
     const [pantry, setPantry] = useState([]);
     const [cameraModalOpen, setCameraModalOpen] = useState(false);
+    const [initialName, setInitialName] = useState('')
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -63,19 +67,50 @@ function Page() {
         setCameraModalOpen(false);
     };
 
-    const uploadImage = async (blob) => {
-        const storage = getStorage();
-        const storageRef = ref(storage, `images/${Date.now()}.jpg`);
-        await uploadBytes(storageRef, blob);
-        const downloadURL = await getDownloadURL(storageRef);
-        return downloadURL;
-    };
 
-    const handlePhotoCapture = (photo) => {
-
+    const handlePhotoCapture = async (photo) => {
         console.log('Captured Photo:', photo);
         handleCameraModalClose();
+
+        const aiPromise = () => new Promise(async (resolve, reject) => {
+
+            try {
+                const base64Image = photo.split(',')[1];
+
+                const result = await fetch('/api/gemini', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        imageBlob: base64Image,
+                    }),
+                });
+
+                const data = await result.json();
+                console.log('API Response:', data.description);
+
+
+                setInitialName(data.description)
+                setModalOpen(true)
+                resolve(data.description)
+            } catch (error) {
+                console.error('Error handling photo capture:', error);
+                reject(error)
+            }
+
+
+
+        });
+
+        toast.promise(aiPromise, {
+            loading: 'Processing Image',
+            success: (data) => `${data} identified`,
+            error: (error) => `Sorry couldnt process photo`,
+        });
+
     };
+
 
 
     const handleDelete = async (id) => {
@@ -123,7 +158,7 @@ function Page() {
                             </IconButton>
                         </Box>
 
-                        <ModalForm open={modalOpen} handleClose={handleModalClose} />
+                        <ModalForm open={modalOpen} handleClose={handleModalClose} initialName={initialName} setInitialName={setInitialName}/>
                         <CameraModal open={cameraModalOpen} onClose={handleCameraModalClose} onPhotoCapture={handlePhotoCapture} />
 
 
