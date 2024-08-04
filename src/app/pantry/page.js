@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, InputAdornment, Button, Paper, IconButton, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
@@ -13,9 +13,6 @@ import { db, collection, onSnapshot, doc, deleteDoc } from '../../services/fireb
 import CameraModal from '../components/CameraModal';
 import { toast } from 'sonner';
 
-
-
-
 function Page() {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
@@ -24,7 +21,7 @@ function Page() {
     const [modalOpen, setModalOpen] = useState(false);
     const [pantry, setPantry] = useState([]);
     const [cameraModalOpen, setCameraModalOpen] = useState(false);
-    const [initialName, setInitialName] = useState('')
+    const [initialName, setInitialName] = useState('');
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -50,7 +47,6 @@ function Page() {
         };
     }, [router]);
 
-
     const handleButtonClick = (button) => {
         setActiveButton(button);
     };
@@ -67,16 +63,13 @@ function Page() {
         setCameraModalOpen(false);
     };
 
-
     const handlePhotoCapture = async (photo) => {
         console.log('Captured Photo:', photo);
         handleCameraModalClose();
 
         const aiPromise = () => new Promise(async (resolve, reject) => {
-
             try {
                 const base64Image = photo.split(',')[1];
-
                 const result = await fetch('/api/gemini', {
                     method: 'POST',
                     headers: {
@@ -90,28 +83,21 @@ function Page() {
                 const data = await result.json();
                 console.log('API Response:', data.description);
 
-
-                setInitialName(data.description)
-                setModalOpen(true)
-                resolve(data.description)
+                setInitialName(data.description);
+                setModalOpen(true);
+                resolve(data.description);
             } catch (error) {
                 console.error('Error handling photo capture:', error);
-                reject(error)
+                reject(error);
             }
-
-
-
         });
 
         toast.promise(aiPromise, {
             loading: 'Processing Image',
             success: (data) => `${data} identified`,
-            error: (error) => `Sorry couldnt process photo`,
+            error: (error) => `Sorry, couldn't process photo`,
         });
-
     };
-
-
 
     const handleDelete = async (id) => {
         try {
@@ -158,9 +144,8 @@ function Page() {
                             </IconButton>
                         </Box>
 
-                        <ModalForm open={modalOpen} handleClose={handleModalClose} initialName={initialName} setInitialName={setInitialName}/>
+                        <ModalForm open={modalOpen} handleClose={handleModalClose} initialName={initialName} setInitialName={setInitialName} />
                         <CameraModal open={cameraModalOpen} onClose={handleCameraModalClose} onPhotoCapture={handlePhotoCapture} />
-
 
                         <TextField
                             id="search-bar"
@@ -171,21 +156,26 @@ function Page() {
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <SearchIcon />
+                                        <SearchIcon sx={{ color: '#ff6c4d' }} />
                                     </InputAdornment>
                                 ),
                             }}
                             sx={{
                                 '& .MuiOutlinedInput-root': {
                                     '& fieldset': {
-                                        border: 'none',
+                                        borderColor: '#ff6c4d',
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: '#FF5733',
+                                    },
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: '#FF5733',
                                     },
                                     bgcolor: '#fff',
                                     borderRadius: 2,
                                 },
                                 width: '100%',
                                 mb: 2,
-
                             }}
                         />
 
@@ -231,7 +221,6 @@ function Page() {
                                     <Paper
                                         key={item.id}
                                         elevation={0}
-
                                         sx={{
                                             p: 1.3,
                                             mt: 1.5,
